@@ -185,7 +185,7 @@ h2{font-family:var(--display);font-weight:700;font-size:1.3rem;margin:0 0 12px;l
   <div class="tabs" role="tablist">
     <button role="tab" id="tabHome" data-tab="home">Home</button>
     <button role="tab" id="tabDebts" data-tab="debts">Debts</button>
-    <button role="tab" id="tabCards" data-tab="cards">Cards</button>
+    <button role="tab" id="tabCards" data-tab="cards">Credit</button>
     <button role="tab" id="tabSave" data-tab="savings">Savings</button>
   </div>
 
@@ -376,11 +376,11 @@ h2{font-family:var(--display);font-weight:700;font-size:1.3rem;margin:0 0 12px;l
     $("#tabCards").setAttribute("aria-selected",tab==="cards");
     $("#tabSave").setAttribute("aria-selected",tab==="savings");
     const fab=$("#addBtn");
-    fab.textContent=tab==="debts"?"+ Add a debt":tab==="cards"?"+ Add a card":"+ Add a goal";
+    fab.textContent=tab==="debts"?"+ Add a debt":tab==="cards"?"+ Add credit":"+ Add a goal";
     fab.classList.toggle("save",tab==="savings");
     fab.classList.toggle("card",tab==="cards");
     fab.style.display=tab==="home"?"none":"";
-    $("#listTitle").textContent=tab==="home"?"Upcoming payments":tab==="debts"?"Your debts":tab==="cards"?"Your credit cards":"Your savings goals";
+    $("#listTitle").textContent=tab==="home"?"Upcoming payments":tab==="debts"?"Your debts":tab==="cards"?"Your credit":"Your savings goals";
     tab==="home"?renderHome():tab==="debts"?renderDebts():tab==="cards"?renderCards():renderSavings();
   }
 
