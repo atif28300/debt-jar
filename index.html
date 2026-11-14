@@ -448,14 +448,10 @@ h2{font-family:var(--display);font-weight:700;font-size:1.3rem;margin:0 0 12px;l
     if(!items.length){list.innerHTML=`<div class="empty"><p>Nothing to pay right now.</p></div>`;return}
     const today=new Date();today.setHours(0,0,0,0);
     const thisM=today.getMonth(),thisY=today.getFullYear();
-    const groups=[["Overdue",[]],["This month",[]],["Next month",[]],["No due day",[]],["Paid & autopay ✓",[]]];
-    ordered.forEach(x=>{
-      if(x.paid)groups[4][1].push(x);
-      else if(!x.due)groups[3][1].push(x);
-      else if(x.due<today)groups[0][1].push(x);
-      else if(x.due.getMonth()===thisM&&x.due.getFullYear()===thisY)groups[1][1].push(x);
-      else groups[2][1].push(x);
-    });
+    const cat=x=>x.kind==="Loan"?0:(x.kind==="Bill"||x.kind==="Autopay")?2:1;
+    const groups=[["Debts",[]],["Credit",[]],["Bills",[]]];
+    ordered.forEach(x=>groups[cat(x)][1].push(x));
+    groups.forEach(g=>g[1].sort((a,b)=>(a.paid-b.paid)||((a.due?a.due.getTime():9e15)-(b.due?b.due.getTime():9e15))));
     const rowHTML=x=>{
       const n=x.due?Math.round((x.due-today)/DAY):null;
       const when=x.due?x.due.toLocaleDateString(undefined,{day:"numeric",month:"short"})+(x.paid?"":n<0?` · <span class="over">${-n} day${n===-1?"":"s"} late</span>`:n===0?" · today":n===1?" · tomorrow":" · in "+n+" days"):"No due day set";
@@ -467,7 +463,7 @@ h2{font-family:var(--display);font-weight:700;font-size:1.3rem;margin:0 0 12px;l
       return x.bill?`<button class="debt row ${x.paid?"done":""}" data-act="billToggle" data-id="${x.bill.id}" aria-label="${esc(x.name)}: ${x.paid?"paid, tap to undo":"tap to mark paid"}">${inner}</button>`
                    :`<article class="debt row ${x.paid?"done":""}">${inner}</article>`;
     };
-    list.innerHTML=groups.filter(g=>g[1].length).map(([t,xs])=>`<div class="grp">${t}</div>${xs.map(rowHTML).join("")}`).join("");
+    list.innerHTML=groups.filter(g=>g[1].length).map(([t,xs])=>`<div class="grp" style="display:flex;justify-content:space-between"><span>${t}</span><span>${fmt(xs.reduce((a,x)=>a+x.amount,0))}</span></div>${xs.map(rowHTML).join("")}`).join("");
   }
 
   function render(){
