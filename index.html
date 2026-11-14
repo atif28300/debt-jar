@@ -208,7 +208,7 @@ h2{font-family:var(--display);font-weight:700;font-size:1.3rem;margin:0 0 12px;l
 
 <script>
 (function(){
-  const ICONS=["🚗","🏠","💳","🎓","📱","🏥","🛋️","🤝","💼","📦"];
+  const ICONS=["🚗","🏠","🏦","💳","🎓","📱","🏥","🛋️","🤝","💼","📦"];
   const CARD_ICONS=["💳","🏦","🛒","⛽","✈️","🍽️","🛍️","📱"];
   const SAVE_ICONS=["🐷","🛡️","🏖️","✈️","🏠","🚗","🎓","💍","🎁","📱"];
   let state={currency:"MYR",debts:[],cards:[],savings:[]};
@@ -314,11 +314,11 @@ h2{font-family:var(--display);font-weight:700;font-size:1.3rem;margin:0 0 12px;l
       if(c.statementDay){
         const amt=Math.max(0,c.balance)+linked;if(amt<=0)return;
         const ns=dayDate(c.statementDay,false);
-        items.push({name:c.name,icon:c.icon,amount:amt,due:c.payDay?firstDayAfter(c.payDay,ns):null,paid:false,color,kind:"Next bill (estimate)"});
+        items.push({name:c.name,icon:c.icon,amount:amt,due:c.payDay?firstDayAfter(c.payDay,ns):null,paid:false,color,kind:"Next bill"});
         return;
       }
       const amt=Math.max(0,c.balance)+linked;if(amt<=0)return;
-      items.push({name:c.name,icon:c.icon,amount:amt,due:c.payDay?dueDateOf(c.payDay):null,paid:false,color,kind:"Card balance"});
+      items.push({name:c.name,icon:c.icon,amount:amt,due:c.payDay?dueDateOf(c.payDay):null,paid:false,color,kind:"Balance due"});
     });
     return items.sort((a,b)=>(a.paid-b.paid)||((a.due?a.due.getTime():9e15)-(b.due?b.due.getTime():9e15)));
   }
