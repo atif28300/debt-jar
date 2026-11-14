@@ -492,7 +492,7 @@ h2{font-family:var(--display);font-weight:700;font-size:1.3rem;margin:0 0 12px;l
     const isOpen=openLogs.has(d.id);
     const rows=L.map((x,i)=>({x,i})).sort((a,b)=>b.x.at-a.x.at);
     return `<button class="logBtn" data-act="log" data-id="${d.id}" aria-expanded="${isOpen}">${isOpen?"Hide":"Show"} details</button>
-    ${isOpen?`<ul class="hist log">${rows.map(({x,i})=>`<li><span>${new Date(x.at).toLocaleDateString(undefined,{day:"numeric",month:"short",year:"numeric"})}</span><span class="k">${x.kind==="fee"?"Fee":x.kind==="interest"?"Interest / profit":"Payment"}</span><span class="${isAdd(x)?"in":""}">${isAdd(x)?"+":"−"}${fmt(x.amount)}</span><button class="x" data-act="undo" data-id="${d.id}" data-i="${i}" aria-label="Remove this entry">×</button></li>`).join("")}</ul>`:""}`;
+    ${isOpen?`<ul class="hist log">${rows.map(({x,i})=>`<li><span>${new Date(x.at).toLocaleDateString(undefined,{day:"numeric",month:"short",year:"numeric"})}</span><span class="k">${x.kind==="fee"?"Fee":x.kind==="interest"?(d.cardId?"Interest → card bill":"Interest / profit"):(d.cardId?"Instalment → card bill":"Payment")}</span><span class="${isAdd(x)?"in":""}">${isAdd(x)?"+":"−"}${fmt(x.amount)}</span><button class="x" data-act="undo" data-id="${d.id}" data-i="${i}" aria-label="Remove this entry">×</button></li>`).join("")}</ul>`:""}`;
   }
 
   function renderDebts(){
@@ -530,7 +530,7 @@ h2{font-family:var(--display);font-weight:700;font-size:1.3rem;margin:0 0 12px;l
       return `<article class="debt ${isPaid?"paid":""}">
         <div class="dHead">
           <div class="ring" style="--p:${p>0?Math.max(p,3):0}" aria-hidden="true"><div class="ico">${d.icon}</div></div>
-          <div><div class="dName">${esc(d.name)}</div><div class="dSub">${d.monthly?fmt(d.monthly)+" / month":"No monthly set"}${d.apr?" · "+d.apr+"% APR":""}</div>${isPaid?"":dueChip(dueIn(d.payDay))}</div>
+          <div><div class="dName">${esc(d.name)}</div><div class="dSub">${d.monthly?fmt(d.monthly)+" / month":"No monthly set"}${d.apr?" · "+d.apr+"% APR":""}</div>${isPaid?"":d.cardId&&state.cards.find(c=>c.id===d.cardId)?`<span class="due">Paid through ${esc(state.cards.find(c=>c.id===d.cardId).name)} bill</span>`:dueChip(dueIn(d.payDay))}</div>
           <div class="dLeft">${isPaid?'<span class="badge">Paid off</span>':`<div class="amt">${fmt(d.balance)}</div><div class="lbl">left</div>`}</div>
         </div>
         <div class="bar" role="progressbar" aria-valuenow="${Math.round(p)}" aria-valuemin="0" aria-valuemax="100" aria-label="${esc(d.name)} paid off"><span style="width:${p}%"></span></div>
